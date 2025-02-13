@@ -7,16 +7,22 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y openssl
 
-# Enable Corepack for Yarn 4 compatibility
+# Enable Corepack and set the correct Yarn version
 RUN corepack enable && corepack prepare yarn@4.3.1 --activate
+
+# Verify Yarn version (useful for debugging)
+RUN yarn --version
 
 # Copy package.json and yarn.lock first for dependency installation
 COPY package.json yarn.lock ./
 
-# Install dependencies using the correct Yarn version
-RUN yarn install --immutable
+# Set the correct Yarn version explicitly
+RUN yarn set version stable
 
-# Copy all project files
+# Install dependencies properly
+RUN yarn install --immutable --check-cache || yarn install --immutable
+
+# Copy all project files after installing dependencies
 COPY . .
 
 # Build the Actual Budget server
