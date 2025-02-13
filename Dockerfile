@@ -7,11 +7,14 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update -y && apt-get upgrade -y && apt-get install -y openssl
 
+# Enable Corepack for Yarn 4 compatibility
+RUN corepack enable && corepack prepare yarn@4.3.1 --activate
+
 # Copy package.json and yarn.lock first for dependency installation
 COPY package.json yarn.lock ./
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
+# Install dependencies using the correct Yarn version
+RUN yarn install --immutable
 
 # Copy all project files
 COPY . .
