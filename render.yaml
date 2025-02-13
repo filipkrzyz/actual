@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: actual-budget
+    env: docker
+    plan: free
+    repo: https://github.com/filipkrzyz/actual
+    branch: main
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
